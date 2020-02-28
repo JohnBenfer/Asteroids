@@ -17,8 +17,11 @@ namespace MonoGameCrossPlatformTemplate
 
         // Window dimensions
         int WINDOW_WIDTH = 1920;
-        int WINDOW_HEIGHT = 1080;
-
+        int WINDOW_HEIGHT = 800;
+        int ViewportX;
+        int ViewportY;
+        public int GAME_WIDTH;
+        public int GAME_HEIGHT;
         public GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Player player;
@@ -44,7 +47,7 @@ namespace MonoGameCrossPlatformTemplate
        
         bool nearX;
         bool nearY;
-
+        Matrix transformMatrix;
 
 
         public Game1()
@@ -71,7 +74,7 @@ namespace MonoGameCrossPlatformTemplate
             //graphics.PreferredBackBufferWidth = 3000;
             //graphics.PreferredBackBufferHeight = 2000;
             //graphics.ApplyChanges();
-
+            
             SetGraphics();
             drawCount = 0;
             soundEffectVolume = 0.15f;
@@ -83,7 +86,10 @@ namespace MonoGameCrossPlatformTemplate
             width = graphics.PreferredBackBufferWidth;
             height = graphics.PreferredBackBufferHeight;
             SetMaxAsteroids();
-
+            GAME_WIDTH = 2 * WINDOW_WIDTH;
+            GAME_HEIGHT = 3 * WINDOW_HEIGHT;
+            ViewportX = (GAME_WIDTH / 2) - WINDOW_WIDTH;
+            ViewportY = (GAME_HEIGHT / 2) - WINDOW_HEIGHT;
             base.Initialize();
             MediaPlayer.Play(backgroundMusic);
             MediaPlayer.Volume = musicVolume;
@@ -93,6 +99,7 @@ namespace MonoGameCrossPlatformTemplate
           
             nearX = false;
             nearY = false;
+            transformMatrix = new Matrix();
         }
 
         private void SetMaxAsteroids()
@@ -268,6 +275,44 @@ namespace MonoGameCrossPlatformTemplate
 
                 }
 
+
+                if (player.X < ViewportX + 200)
+                {
+                    ViewportX -= 6;
+                }
+                else if (player.X > ViewportX + WINDOW_WIDTH - 200)
+                {
+                    ViewportX += 6;
+                }
+                if (player.Y < ViewportY + 150)
+                {
+                    ViewportY -= 6;
+                }
+                else if (player.Y > ViewportY + WINDOW_HEIGHT - 150)
+                {
+                    ViewportY += 6;
+                }
+
+                if(ViewportX < 0)
+                {
+                    ViewportX = 0;
+                } else if(ViewportX > GAME_WIDTH)
+                {
+                    ViewportX = GAME_WIDTH;
+                }
+
+                if(ViewportY < 0)
+                {
+                    ViewportY = 0;
+                }
+                else if (ViewportY > GAME_HEIGHT)
+                {
+                    ViewportY = GAME_HEIGHT;
+                }
+
+                transformMatrix = Matrix.CreateTranslation(new Vector3((float)-ViewportX, (float)-ViewportY, 0));
+                Console.WriteLine("X: " + ViewportX + " Y: " + ViewportY + " Player X: " + (int)player.X + " Player Y: " + (int)player.Y);
+                Console.Clear();
                 base.Update(gameTime);
             }
             else
@@ -290,7 +335,8 @@ namespace MonoGameCrossPlatformTemplate
 
             }
 
-        }
+
+        } // closes update method
 
 
         private void RemoveAsteroids(List<Asteroid> ToDeleteAsteroids)
@@ -320,9 +366,14 @@ namespace MonoGameCrossPlatformTemplate
         {
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, transformMatrix);
             Rectangle r = new Rectangle(new Point(0, 0), new Point(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight));
             spriteBatch.Draw(background, r, Color.White);
+
+            for(int i = 0; i<GAME_WIDTH/WINDOW_WIDTH; i++)
+            {
+                spriteBatch.Draw(background, new Rectangle(new Point(i*WINDOW_WIDTH, 0), new Point(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight)), Color.White);
+            }
 
 
             if (!isGameOver)

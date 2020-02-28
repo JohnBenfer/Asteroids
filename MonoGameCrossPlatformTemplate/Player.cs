@@ -51,8 +51,8 @@ namespace MonoGameCrossPlatformTemplate
             this.game = game;
             this.soundEffectVolume = game.soundEffectVolume;
 
-            X = screenWidth / 2;
-            Y = screenHeight / 2;
+            X = game.GAME_WIDTH / 2;
+            Y = game.GAME_HEIGHT / 2;
             rotation = 0;
             inactiveBullets = new Stack<Bullet>();
             activeBullets = new List<Bullet>();
@@ -143,17 +143,17 @@ namespace MonoGameCrossPlatformTemplate
             {
                 X = 0;
             }
-            if (X > screenWidth)
+            if (X > game.GAME_WIDTH)
             {
-                X = screenWidth;
+                X = game.GAME_WIDTH;
             }
             if (Y < 0)
             {
                 Y = 0;
             }
-            if (Y > screenHeight)
+            if (Y > game.GAME_HEIGHT)
             {
-                Y = screenHeight;
+                Y = game.GAME_HEIGHT;
             }
 
             hitBox.X = X;
