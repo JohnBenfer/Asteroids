@@ -17,13 +17,14 @@ namespace MonoGameCrossPlatformTemplate
 
         // Window dimensions
         int WINDOW_WIDTH = 1920;
-        int WINDOW_HEIGHT = 800;
+        int WINDOW_HEIGHT = 1080;
         int ViewportX;
         int ViewportY;
         public int GAME_WIDTH;
         public int GAME_HEIGHT;
         public GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        SpriteBatch staticSpriteBatch;
         Player player;
         int asteroidCount;
         int level;
@@ -39,6 +40,7 @@ namespace MonoGameCrossPlatformTemplate
         float musicVolume;
         public int FRAME_RATE = 60;
         int score;
+        int highScore = 0;
         SpriteFont scoreFont;
         bool isGameOver;
         int width;
@@ -79,7 +81,7 @@ namespace MonoGameCrossPlatformTemplate
             drawCount = 0;
             soundEffectVolume = 0.15f;
             musicVolume = 0.2f;
-            level = 1;
+            level = 4;
             asteroidCount = 0;
             asteroids = new List<Asteroid>();
             closeAsteroids = new List<Asteroid>();
@@ -88,8 +90,8 @@ namespace MonoGameCrossPlatformTemplate
             SetMaxAsteroids();
             GAME_WIDTH = 2 * WINDOW_WIDTH;
             GAME_HEIGHT = 3 * WINDOW_HEIGHT;
-            ViewportX = (GAME_WIDTH / 2) - WINDOW_WIDTH;
-            ViewportY = (GAME_HEIGHT / 2) - WINDOW_HEIGHT;
+            ViewportX = (GAME_WIDTH / 2) - (WINDOW_WIDTH/2);
+            ViewportY = (GAME_HEIGHT / 2) - (WINDOW_HEIGHT/2);
             base.Initialize();
             MediaPlayer.Play(backgroundMusic);
             MediaPlayer.Volume = musicVolume;
@@ -106,20 +108,20 @@ namespace MonoGameCrossPlatformTemplate
         {
             if (WINDOW_WIDTH <= 2000)
             {
-                maxAsteroids = 8;
+                maxAsteroids = 20;
 
             }
             else if (WINDOW_WIDTH <= 2500)
             {
-                maxAsteroids = 10;
+                maxAsteroids = 22;
             }
             else if (WINDOW_WIDTH <= 3000)
             {
-                maxAsteroids = 12;
+                maxAsteroids = 24;
             }
             else
             {
-                maxAsteroids = 14;
+                maxAsteroids = 26;
             }
         }
 
@@ -143,6 +145,7 @@ namespace MonoGameCrossPlatformTemplate
 
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            staticSpriteBatch = new SpriteBatch(GraphicsDevice);
 
             gameOver = Content.Load<SoundEffect>("Player hit");
             asteroidDestroyed = Content.Load<SoundEffect>("Asteroid Destroyed");
@@ -173,7 +176,7 @@ namespace MonoGameCrossPlatformTemplate
 
             if (!isGameOver)
             {
-                Console.WriteLine(closeAsteroids.Count);
+                //Console.WriteLine(closeAsteroids.Count);
                 player.Update();
                 List<Asteroid> AsteroidsDestroyedByPlayer = new List<Asteroid>();
                 List<Asteroid> AsteroidsOffScreen = new List<Asteroid>();
@@ -276,43 +279,43 @@ namespace MonoGameCrossPlatformTemplate
                 }
 
 
-                if (player.X < ViewportX + 200)
+                if (player.X < ViewportX + 300)
                 {
-                    ViewportX -= 6;
+                    ViewportX -= 7;
                 }
-                else if (player.X > ViewportX + WINDOW_WIDTH - 200)
+                else if (player.X > ViewportX + WINDOW_WIDTH - 350)
                 {
-                    ViewportX += 6;
+                    ViewportX += 7;
                 }
-                if (player.Y < ViewportY + 150)
+                if (player.Y < ViewportY + 250)
                 {
-                    ViewportY -= 6;
+                    ViewportY -= 7;
                 }
-                else if (player.Y > ViewportY + WINDOW_HEIGHT - 150)
+                else if (player.Y > ViewportY + WINDOW_HEIGHT - 250)
                 {
-                    ViewportY += 6;
+                    ViewportY += 7;
                 }
 
                 if(ViewportX < 0)
                 {
                     ViewportX = 0;
-                } else if(ViewportX > GAME_WIDTH)
+                } else if(ViewportX > GAME_WIDTH - WINDOW_WIDTH + 100)
                 {
-                    ViewportX = GAME_WIDTH;
+                    ViewportX = GAME_WIDTH - WINDOW_WIDTH + 100;
                 }
 
                 if(ViewportY < 0)
                 {
                     ViewportY = 0;
                 }
-                else if (ViewportY > GAME_HEIGHT)
+                else if (ViewportY > GAME_HEIGHT - WINDOW_HEIGHT)
                 {
-                    ViewportY = GAME_HEIGHT;
+                    ViewportY = GAME_HEIGHT - WINDOW_HEIGHT;
                 }
 
                 transformMatrix = Matrix.CreateTranslation(new Vector3((float)-ViewportX, (float)-ViewportY, 0));
-                Console.WriteLine("X: " + ViewportX + " Y: " + ViewportY + " Player X: " + (int)player.X + " Player Y: " + (int)player.Y);
-                Console.Clear();
+                //Console.WriteLine("X: " + ViewportX + " Y: " + ViewportY + " Player X: " + (int)player.X + " Player Y: " + (int)player.Y);
+                //Console.Clear();
                 base.Update(gameTime);
             }
             else
@@ -367,14 +370,18 @@ namespace MonoGameCrossPlatformTemplate
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, transformMatrix);
+            staticSpriteBatch.Begin();
+
             Rectangle r = new Rectangle(new Point(0, 0), new Point(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight));
             spriteBatch.Draw(background, r, Color.White);
 
-            for(int i = 0; i<GAME_WIDTH/WINDOW_WIDTH; i++)
+            for (int j = 0; j < GAME_HEIGHT / WINDOW_HEIGHT; j++)
             {
-                spriteBatch.Draw(background, new Rectangle(new Point(i*WINDOW_WIDTH, 0), new Point(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight)), Color.White);
+                for (int i = 0; i < GAME_WIDTH / WINDOW_WIDTH; i++)
+                {
+                    spriteBatch.Draw(background, new Rectangle(new Point(i * WINDOW_WIDTH, j*WINDOW_HEIGHT), new Point(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight)), Color.White);
+                }
             }
-
 
             if (!isGameOver)
             {
@@ -383,14 +390,16 @@ namespace MonoGameCrossPlatformTemplate
                 {
                     a.Draw(spriteBatch);
                 }
-                spriteBatch.DrawString(scoreFont, "Score: " + score, new Vector2(graphics.PreferredBackBufferWidth / 2, 10), Color.White, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 1);
+                staticSpriteBatch.DrawString(scoreFont, "Score: " + score, new Vector2(graphics.PreferredBackBufferWidth / 2, 10), Color.White, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 1);
             }
             else
             {
-                spriteBatch.DrawString(scoreFont, "Score: " + score, new Vector2((graphics.PreferredBackBufferWidth / 2) - 200, (graphics.PreferredBackBufferHeight / 2) - 100), Color.White, 0f, new Vector2(0, 0), 2f, SpriteEffects.None, 1);
-                spriteBatch.DrawString(scoreFont, "Press R to play again or ESC to quit", new Vector2((graphics.PreferredBackBufferWidth / 2) - 530, (graphics.PreferredBackBufferHeight / 2)), Color.White, 0f, new Vector2(0, 0), 1.5f, SpriteEffects.None, 1);
+                staticSpriteBatch.DrawString(scoreFont, "Score: " + score, new Vector2((graphics.PreferredBackBufferWidth / 2) - 200, (graphics.PreferredBackBufferHeight / 2) - 150), Color.White, 0f, new Vector2(0, 0), 2f, SpriteEffects.None, 1);
+                staticSpriteBatch.DrawString(scoreFont, "High Score: " + highScore, new Vector2((graphics.PreferredBackBufferWidth / 2) - 200, (graphics.PreferredBackBufferHeight / 2) - 80), Color.White, 0f, new Vector2(0, 0), 2f, SpriteEffects.None, 1);
+                staticSpriteBatch.DrawString(scoreFont, "Press R to play again or ESC to quit", new Vector2((graphics.PreferredBackBufferWidth / 2) - 200, (graphics.PreferredBackBufferHeight / 2) - 10), Color.White, 0f, new Vector2(0, 0), 1.5f, SpriteEffects.None, 1);
             }
             spriteBatch.End();
+            staticSpriteBatch.End();
 
             base.Draw(gameTime);
         }
@@ -399,6 +408,10 @@ namespace MonoGameCrossPlatformTemplate
         private void GameOver()
         {
             gameOver.Play(soundEffectVolume, 0, 0);
+            if(score > highScore)
+            {
+                highScore = score;
+            }
             asteroids = null;
             player = null;
             MediaPlayer.Stop();

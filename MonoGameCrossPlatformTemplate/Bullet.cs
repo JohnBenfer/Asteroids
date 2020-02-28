@@ -18,6 +18,7 @@ namespace MonoGameCrossPlatformTemplate
         static int bulletHeight;
         public static double speed;
         public static Vector2 origin;
+        Game1 game;
 
         //BulletModel bulletModel;
 
@@ -43,6 +44,7 @@ namespace MonoGameCrossPlatformTemplate
             origin = new Vector2(bulletWidth / 2, bulletHeight / 2);
 
             isActive = false;
+            this.game = game;
         }
 
         /// <summary>
@@ -70,7 +72,7 @@ namespace MonoGameCrossPlatformTemplate
             hitBox.X = X;
             hitBox.Y = Y;
 
-            if (X > screenWidth + 10 || X < -10 || Y > screenHeight + 10 || Y < -10)
+            if (X > game.GAME_WIDTH + 10 || X < -10 || Y > game.GAME_HEIGHT + 10 || Y < -10)
             {
                 Killed = true;
             }

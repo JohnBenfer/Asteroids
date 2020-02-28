@@ -22,6 +22,8 @@ namespace MonoGameCrossPlatformTemplate
         static Texture2D Explosion4;
         Texture2D currentTexture;
         static Texture2D[] sprites;
+        static int gameHeight;
+        static int gameWidth;
 
         int frame;
 
@@ -58,7 +60,8 @@ namespace MonoGameCrossPlatformTemplate
             LoadContent(content);
             SetScale();
             timer = new TimeSpan(0);
-
+            gameWidth = game.GAME_WIDTH;
+            gameHeight = game.GAME_HEIGHT;
             Hit = false;
 
             speed = (int)(42 * scale);
@@ -74,11 +77,11 @@ namespace MonoGameCrossPlatformTemplate
             if (X == 0)
             {
                 X = random.Next(-100, -1);
-                Y = random.Next(-100, screenHeight + 100);
+                Y = random.Next(-100, gameHeight + 100);
             }
             else if (X == 1)
             {
-                X = random.Next(0, screenWidth);
+                X = random.Next(0, gameWidth);
 
                 if (random.Next(0, 2) == 1)
                 {
@@ -86,13 +89,13 @@ namespace MonoGameCrossPlatformTemplate
                 }
                 else
                 {
-                    Y = random.Next(screenHeight + 1, screenHeight + 100);
+                    Y = random.Next(gameHeight + 1, gameHeight + 100);
                 }
             }
             else
             {
-                X = random.Next(screenWidth + 1, screenWidth + 100);
-                Y = random.Next(-100, screenHeight + 100);
+                X = random.Next(gameWidth + 1, gameWidth + 100);
+                Y = random.Next(-100, gameHeight + 100);
             }
 
 
@@ -152,7 +155,7 @@ namespace MonoGameCrossPlatformTemplate
                 hitBox.X = X;
                 hitBox.Y = Y;
 
-                if (X > screenWidth + 130 || X < -130 || Y > screenHeight + 130 || Y < -130)
+                if (X > game.GAME_WIDTH + 130 || X < -130 || Y > game.GAME_HEIGHT + 130 || Y < -130)
                 {
                     OffScreen = true;
                 }

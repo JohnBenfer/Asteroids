@@ -139,21 +139,21 @@ namespace MonoGameCrossPlatformTemplate
                 shootLock = false;
             }
 
-            if (X < 0)
+            if (X < 50)
             {
-                X = 0;
+                X = 50;
             }
-            if (X > game.GAME_WIDTH)
+            if (X > game.GAME_WIDTH - 100)
             {
-                X = game.GAME_WIDTH;
+                X = game.GAME_WIDTH - 100;
             }
-            if (Y < 0)
+            if (Y < 50)
             {
-                Y = 0;
+                Y = 50;
             }
-            if (Y > game.GAME_HEIGHT)
+            if (Y > game.GAME_HEIGHT - 50)
             {
-                Y = game.GAME_HEIGHT;
+                Y = game.GAME_HEIGHT - 50;
             }
 
             hitBox.X = X;
