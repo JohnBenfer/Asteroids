@@ -196,7 +196,7 @@ namespace MonoGameCrossPlatformTemplate
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(currentTexture, new Rectangle((int)X, (int)Y, (int)(100 * scale), (int)(scale * 120)), null, color, (float)rotation, origin, SpriteEffects.None, 0);
+            spriteBatch.Draw(currentTexture, new Rectangle((int)X, (int)Y, (int)(100 * scale), (int)(scale * 120)), null, color, (float)rotation, origin, SpriteEffects.None, 0.5f);
         }
 
         private void SetScale()

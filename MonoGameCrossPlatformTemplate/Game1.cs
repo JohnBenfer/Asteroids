@@ -279,19 +279,19 @@ namespace MonoGameCrossPlatformTemplate
                 }
 
 
-                if (player.X < ViewportX + 300)
+                if (player.X < ViewportX + 450)
                 {
                     ViewportX -= 7;
                 }
-                else if (player.X > ViewportX + WINDOW_WIDTH - 350)
+                else if (player.X > ViewportX + WINDOW_WIDTH - 500)
                 {
                     ViewportX += 7;
                 }
-                if (player.Y < ViewportY + 250)
+                if (player.Y < ViewportY + 350)
                 {
                     ViewportY -= 7;
                 }
-                else if (player.Y > ViewportY + WINDOW_HEIGHT - 250)
+                else if (player.Y > ViewportY + WINDOW_HEIGHT - 350)
                 {
                     ViewportY += 7;
                 }
@@ -369,7 +369,7 @@ namespace MonoGameCrossPlatformTemplate
         {
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, transformMatrix);
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, null, null, null, null, null, transformMatrix);
             staticSpriteBatch.Begin();
 
             Rectangle r = new Rectangle(new Point(0, 0), new Point(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight));

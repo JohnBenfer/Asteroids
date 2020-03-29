@@ -39,6 +39,8 @@ namespace MonoGameCrossPlatformTemplate
         bool shootLock = false;
         static int maxBullets = 20;
 
+        List<ParticleSystem> particles = new List<ParticleSystem>();
+
         public Player(Game1 game, ContentManager content)
         {
             screenHeight = game.graphics.PreferredBackBufferHeight;
@@ -79,13 +81,18 @@ namespace MonoGameCrossPlatformTemplate
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, new Rectangle((int)X, (int)Y, 300, 200), null, Color.White, ConvertToRadians(rotation + 180), origin, SpriteEffects.None, 0);
+            spriteBatch.Draw(texture, new Rectangle((int)X, (int)Y, 300, 200), null, Color.White, ConvertToRadians(rotation + 180), origin, SpriteEffects.None, 1f);
             foreach (Bullet b in activeBullets)
             {
                 if (b.isActive)
                 {
                     b.Draw(spriteBatch);
                 }
+            }
+
+            foreach (ParticleSystem p in particles)
+            {
+                p.Draw(spriteBatch);
             }
         }
 
@@ -118,6 +125,7 @@ namespace MonoGameCrossPlatformTemplate
             {
                 X += Math.Sin(ConvertToRadians(rotation)) * speed;
                 Y -= Math.Cos(ConvertToRadians(rotation)) * speed;
+                SpawnBoost();
             }
             if (keyboardState.IsKeyDown(Keys.Down))
             {
@@ -175,6 +183,27 @@ namespace MonoGameCrossPlatformTemplate
                 inactiveBullets.Push(b);
                 activeBullets.Remove(b);
             }
+
+            List<ParticleSystem> deadParticles = new List<ParticleSystem>();
+            foreach (ParticleSystem particle in particles)
+            {
+                particle.Update();
+                if(particle.life<= 0)
+                {
+                    deadParticles.Add(particle);
+                }
+            }
+            foreach (ParticleSystem p in deadParticles)
+            {
+                particles.Remove(p);
+            }
+
+
+        } // closes update method
+
+        private void SpawnBoost()
+        {
+            particles.Add(new ParticleSystem(game, content, X, Y, Color.Aqua));
         }
 
         private void Shoot()

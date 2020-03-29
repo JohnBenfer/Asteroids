@@ -6,8 +6,10 @@ namespace MonoGameCrossPlatformTemplate
 
     public struct Particle{
 
-        
 
+        
+     
     }
+
 
 }
