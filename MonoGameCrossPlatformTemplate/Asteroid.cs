@@ -27,6 +27,8 @@ namespace MonoGameCrossPlatformTemplate
 
         int frame;
 
+        List<AsteroidParticle> particles = new List<AsteroidParticle>();
+
         TimeSpan timer;
 
         static int screenWidth;
@@ -51,6 +53,8 @@ namespace MonoGameCrossPlatformTemplate
 
         static double scale;
 
+        ContentManager content;
+
         Game1 game;
 
         public Asteroid(Game1 game, ContentManager content, double playerX, double playerY)
@@ -58,6 +62,7 @@ namespace MonoGameCrossPlatformTemplate
             screenHeight = game.graphics.PreferredBackBufferHeight;
             screenWidth = game.graphics.PreferredBackBufferWidth;
             LoadContent(content);
+            this.content = content;
             SetScale();
             timer = new TimeSpan(0);
             gameWidth = game.GAME_WIDTH;
@@ -170,33 +175,73 @@ namespace MonoGameCrossPlatformTemplate
                 Explode();
             }
 
+            List<AsteroidParticle> deadParticles = new List<AsteroidParticle>();
+            foreach (AsteroidParticle particle in particles)
+            {
+                particle.Update();
+                if (particle.life <= 0)
+                {
+                    deadParticles.Add(particle);
+                }
+            }
+            foreach (AsteroidParticle p in deadParticles)
+            {
+                particles.Remove(p);
+            }
+
+        }
+
+        private void SpawnParticle()
+        {
+            particles.Add(new AsteroidParticle(game, content, X, Y));
         }
 
         private void Explode()
         {
-
+            
 
 
             if ((timer.TotalMilliseconds * 7) > (game.FRAME_RATE - 58))
             {
 
                 frame++;
-                currentTexture = sprites[frame];
+                if (frame <= 4)
+                {
+                    currentTexture = sprites[frame];
+                } else
+                {
+                    currentTexture = null;
+                }
                 timer -= new TimeSpan(0, 0, 0, 0, game.FRAME_RATE);
             }
 
+            if(frame < 6)
+            {
+                SpawnParticle();
+                SpawnParticle();
+                SpawnParticle();
+            }
 
-
-            if (frame == 4)
+            if (frame == 20)
             {
                 Exploding = false;
                 OffScreen = true;
-            }
+            } 
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(currentTexture, new Rectangle((int)X, (int)Y, (int)(100 * scale), (int)(scale * 120)), null, color, (float)rotation, origin, SpriteEffects.None, 0.5f);
+            try
+            {
+                spriteBatch.Draw(currentTexture, new Rectangle((int)X, (int)Y, (int)(100 * scale), (int)(scale * 120)), null, color, (float)rotation, origin, SpriteEffects.None, 0.5f);
+            } catch(Exception ex)
+            {
+
+            }
+            foreach (AsteroidParticle particle in particles)
+            {
+                particle.Draw(spriteBatch);
+            }
         }
 
         private void SetScale()

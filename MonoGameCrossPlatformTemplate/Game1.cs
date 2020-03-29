@@ -251,6 +251,7 @@ namespace MonoGameCrossPlatformTemplate
                         }
                     }
 
+
                     if (asteroid.OffScreen)
                     {
                         AsteroidsOffScreen.Add(asteroid);
@@ -261,9 +262,9 @@ namespace MonoGameCrossPlatformTemplate
                 // spatial partitioned asteroid check if hitting player
                 foreach (Asteroid asteroid in closeAsteroids)
                 {
-                    if (asteroid.hitBox.CollidesWith(player.hitBox) && !asteroid.Exploding) // game over
+                    if (asteroid.hitBox.CollidesWith(player.hitBox) && !asteroid.Exploding && !asteroid.Hit) // game over
                     {
-                        GameOver();
+                         GameOver();
                         return;
                     }
                 }

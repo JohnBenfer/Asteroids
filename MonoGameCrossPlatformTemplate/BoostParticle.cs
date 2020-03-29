@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace MonoGameCrossPlatformTemplate
 {
-    public class ParticleSystem
+    public class BoostParticle
     {
         private Texture2D texture;
         public double x;
@@ -33,13 +33,14 @@ namespace MonoGameCrossPlatformTemplate
 
         Vector2 origin;
 
-        public ParticleSystem(Game1 game, ContentManager content, double x, double y, Color color)
+        public BoostParticle(Game1 game, ContentManager content, double x, double y, double playerRotation)
         {
             LoadContent(content);
 
             this.y = y;
             this.x = x;
-            
+
+            this.playerRotation = playerRotation;
             
 
             origin = new Vector2(texture.Width / 2, texture.Height / 2);
@@ -47,23 +48,23 @@ namespace MonoGameCrossPlatformTemplate
             Random random = new Random();
 
 
-            int i = random.Next(0, 3);
-            if(i == 1) {
+            int i = random.Next(0, 6);
+            if(i < 3) {
 
                 this.color = Color.Red;
 
              }
-            else if(i == 2){
+            else if(i == 4 || i == 3){
 
                 this.color = Color.Orange;
 
-            } else if(i==0) {
+            } else if(i==5) {
 
                 this.color = Color.Yellow;
 
                 }
 
-            scale = 0.01 * random.Next(1, 5);
+            scale = 0.02 * random.Next(1, 5);
             velocity = random.Next(4, 6);
             rotation = random.Next(0, 90);
 
@@ -72,11 +73,17 @@ namespace MonoGameCrossPlatformTemplate
         public void Update()
         {
             life -= 0.1;
+            scale -= 0.008;
 
-            x += Math.Sin(ConvertToRadians(rotation)) * velocity;
-            y -= Math.Cos(ConvertToRadians(rotation)) * velocity;
+            x -= Math.Sin(ConvertToRadians(playerRotation)) * velocity;
+            y += Math.Cos(ConvertToRadians(playerRotation)) * velocity;
 
-            velocity -= 0.5;
+            velocity -= 0.46;
+
+            if(velocity <= 0)
+            {
+                life = 0;
+            }
 
         }
 

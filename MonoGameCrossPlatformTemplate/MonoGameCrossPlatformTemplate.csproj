@@ -51,7 +51,8 @@
     <Compile Include="Asteroid.cs" />
     <Compile Include="Bomb.cs" />
     <Compile Include="Particle.cs" />
-    <Compile Include="ParticleSystem.cs" />
+    <Compile Include="BoostParticle.cs" />
+    <Compile Include="AsteroidParticle.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

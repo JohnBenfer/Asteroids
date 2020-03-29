@@ -19,7 +19,7 @@ namespace MonoGameCrossPlatformTemplate
         public CircleHitBox hitBox;
         double rotation;
         Vector2 origin;
-
+        public Color color;
         public double X;
         public double Y;
 
@@ -39,7 +39,7 @@ namespace MonoGameCrossPlatformTemplate
         bool shootLock = false;
         static int maxBullets = 20;
 
-        List<ParticleSystem> particles = new List<ParticleSystem>();
+        List<BoostParticle> particles = new List<BoostParticle>();
 
         public Player(Game1 game, ContentManager content)
         {
@@ -68,6 +68,7 @@ namespace MonoGameCrossPlatformTemplate
 
             hitBox = new CircleHitBox(40, X, Y);
 
+            color = Color.White;
         }
 
         private void InitializeBullets(int n)
@@ -81,7 +82,7 @@ namespace MonoGameCrossPlatformTemplate
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, new Rectangle((int)X, (int)Y, 300, 200), null, Color.White, ConvertToRadians(rotation + 180), origin, SpriteEffects.None, 1f);
+            spriteBatch.Draw(texture, new Rectangle((int)X, (int)Y, 300, 200), null, color, ConvertToRadians(rotation + 180), origin, SpriteEffects.None, 1f);
             foreach (Bullet b in activeBullets)
             {
                 if (b.isActive)
@@ -90,7 +91,7 @@ namespace MonoGameCrossPlatformTemplate
                 }
             }
 
-            foreach (ParticleSystem p in particles)
+            foreach (BoostParticle p in particles)
             {
                 p.Draw(spriteBatch);
             }
@@ -184,8 +185,8 @@ namespace MonoGameCrossPlatformTemplate
                 activeBullets.Remove(b);
             }
 
-            List<ParticleSystem> deadParticles = new List<ParticleSystem>();
-            foreach (ParticleSystem particle in particles)
+            List<BoostParticle> deadParticles = new List<BoostParticle>();
+            foreach (BoostParticle particle in particles)
             {
                 particle.Update();
                 if(particle.life<= 0)
@@ -193,7 +194,7 @@ namespace MonoGameCrossPlatformTemplate
                     deadParticles.Add(particle);
                 }
             }
-            foreach (ParticleSystem p in deadParticles)
+            foreach (BoostParticle p in deadParticles)
             {
                 particles.Remove(p);
             }
@@ -203,7 +204,7 @@ namespace MonoGameCrossPlatformTemplate
 
         private void SpawnBoost()
         {
-            particles.Add(new ParticleSystem(game, content, X, Y, Color.Aqua));
+            particles.Add(new BoostParticle(game, content, X, Y, rotation));
         }
 
         private void Shoot()
