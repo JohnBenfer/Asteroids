@@ -185,16 +185,17 @@ namespace MonoGameCrossPlatformTemplate
                 activeBullets.Remove(b);
             }
 
-            List<BoostParticle> deadParticles = new List<BoostParticle>();
+
+            List<BoostParticle> deadBoostParticles = new List<BoostParticle>();
             foreach (BoostParticle particle in particles)
             {
                 particle.Update();
-                if(particle.life<= 0)
+                if (particle.life <= 0)
                 {
-                    deadParticles.Add(particle);
+                    deadBoostParticles.Add(particle);
                 }
             }
-            foreach (BoostParticle p in deadParticles)
+            foreach (BoostParticle p in deadBoostParticles)
             {
                 particles.Remove(p);
             }

@@ -53,6 +53,7 @@
     <Compile Include="Particle.cs" />
     <Compile Include="BoostParticle.cs" />
     <Compile Include="AsteroidParticle.cs" />
+    <Compile Include="BulletParticle.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

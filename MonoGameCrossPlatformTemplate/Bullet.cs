@@ -19,6 +19,7 @@ namespace MonoGameCrossPlatformTemplate
         public static double speed;
         public static Vector2 origin;
         Game1 game;
+        ContentManager content;
 
         //BulletModel bulletModel;
 
@@ -27,6 +28,7 @@ namespace MonoGameCrossPlatformTemplate
         public double Y;
         public CircleHitBox hitBox;
 
+        List<BulletParticle> particles = new List<BulletParticle>();
 
         public bool Killed = false;
 
@@ -34,6 +36,7 @@ namespace MonoGameCrossPlatformTemplate
 
         public Bullet(Game1 game, ContentManager content)
         {
+            this.content = content;
             //bulletModel = game.bulletModel;
             texture = content.Load<Texture2D>("Bullet");
             screenHeight = game.graphics.PreferredBackBufferHeight;
@@ -76,6 +79,27 @@ namespace MonoGameCrossPlatformTemplate
             {
                 Killed = true;
             }
+
+            List<BulletParticle> deadBulletParticles = new List<BulletParticle>();
+            foreach (BulletParticle b in particles)
+            {
+                b.Update();
+                if(b.life <= 0)
+                {
+                    deadBulletParticles.Add(b);
+                }
+            }
+            foreach(BulletParticle b in deadBulletParticles)
+            {
+                particles.Remove(b);
+            }
+            SpawnParticle();
+            
+        }
+
+        private void SpawnParticle()
+        {
+            particles.Add(new BulletParticle(game, content, X, Y, rotation));
         }
 
         private float ConvertToRadians(double degrees)
@@ -86,6 +110,10 @@ namespace MonoGameCrossPlatformTemplate
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(texture, new Rectangle((int)X, (int)Y, 70, 70), null, Color.White, (float)ConvertToRadians(rotation), origin, SpriteEffects.None, 0.6f);
+            foreach(BulletParticle b in particles)
+            {
+                b.Draw(spriteBatch);
+            }
         }
 
         public void LoadContent(ContentManager content)

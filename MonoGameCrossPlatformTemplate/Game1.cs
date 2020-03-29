@@ -370,7 +370,7 @@ namespace MonoGameCrossPlatformTemplate
         {
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, null, null, null, null, null, transformMatrix);
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, transformMatrix);
             staticSpriteBatch.Begin();
 
             Rectangle r = new Rectangle(new Point(0, 0), new Point(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight));
